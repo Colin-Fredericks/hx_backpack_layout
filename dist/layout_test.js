@@ -3,24 +3,30 @@
 // from input they've made in the course.
 let learner_data_example = {
     title: 'Hello World',
-    layout: 'list_1 image_1 / list_1 table_1 / text_1 text_1',
+    layout: 'markdown_1 image_1 / markdown_1 table_1 / markdown2 markdown2',
     content: [
-        { title: 'text_1', cell_type: "text", value: 'Hello World' },
         { title: 'image_1', cell_type: "image", url: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png', alt: 'Google Logo' },
-        { title: 'table_1', cell_type: "table", table: [[1, 2, 3], [4, 5, 6], [7, 8, 9]] },
-        { title: 'list_1', cell_type: "list", list_type: "bullets", items: ['item 1', 'item 2', 'item 3'] },
+        { title: 'table_1', cell_type: "table", table: [['Header 1', 'Header 2', 'Header 3'], ['1', '2', '3'], ['4', '5', '6']] },
+        { title: 'markdown_1', cell_type: "markdown", value: '* item 1\n* item 2\n*item 3' },
+        { title: 'markdown_2', cell_type: "markdown", value: 'Hello World' },
     ]
 };
-makeDownloadableOutput(learner_data_example);
+$(function () {
+    makeDownloadableOutput(learner_data_example);
+});
 // Creates a downloadable HTML file and starts the download.
 function makeDownloadableOutput(student_data) {
+    $('body').append("<p>test</p>");
     let page = makePage(student_data);
+    $('body').append(page);
+    /*
     let blob = new Blob([page], { type: 'text/html' });
     let url = URL.createObjectURL(blob);
     let link = document.createElement('a');
     link.href = url;
     link.download = 'output.html';
     link.click();
+    */
 }
 // Creates the HTML page.
 function makePage(student_data) {
@@ -62,20 +68,19 @@ function makeGrid(student_data) {
 // Mostly shuffles things to other functions.
 function makeGridComponents(content) {
     for (let i = 0; i < content.length; i++) {
-        if (content[i].cell_type.includes('text')) {
-            return makeText(content[i]);
-        }
-        else if (content[i].cell_type.includes('image')) {
-            return makeImage(content[i]);
-        }
-        else if (content[i].cell_type.includes('table')) {
-            return makeTable(content[i]);
-        }
-        else if (content[i].cell_type.includes('list')) {
-            return makeList(content[i]);
-        }
-        else {
-            return content[i].cell_type + ' debug';
+        switch (content[i].cell_type) {
+            case 'markdown':
+                return makeText(content[i]);
+            case 'image':
+                return makeImage(content[i]);
+            case 'table':
+                return makeTable(content[i]);
+            case 'graph':
+                return makeGraph(content[i]);
+            case 'blank':
+                return "";
+            default:
+                return content[i].cell_type + ' debug';
         }
     }
 }
@@ -83,9 +88,10 @@ function makeGridComponents(content) {
 // options: 
 //   https://github.com/showdownjs/showdown/blob/master/dist/showdown.min.js (100kB)
 //   https://github.com/markedjs/marked/blob/master/marked.min.js (50kB)
-// Also HTML sanitizer: https://github.com/cure53/DOMPurify/blob/main/dist/purify.min.js (20kB)
+// HTML sanitizer: https://github.com/cure53/DOMPurify/ (20kB)
 function makeText(content) {
-    return sanitizeHTML(parseMarkdown(content));
+    let markdown = content.value;
+    return DOMPurify.sanitize(marked.parse(markdown));
 }
 // Content should be a URL or data URI.
 function makeImage(content) {
@@ -93,7 +99,7 @@ function makeImage(content) {
 }
 function makeTable(content) {
 }
-function makeList(content) {
+function makeGraph(content) {
 }
 /*
 

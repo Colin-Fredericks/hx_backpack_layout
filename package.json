@@ -19,7 +19,11 @@
   "homepage": "https://github.com/Colin-Fredericks/hx_backpack_layout#readme",
   "dependencies": {
     "dompurify": "^2.4.0",
+    "jquery": "^3.6.1",
     "jsdom": "^20.0.0",
     "marked": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.14"
   }
 }

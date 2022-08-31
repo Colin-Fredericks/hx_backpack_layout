@@ -33,18 +33,24 @@ let learner_data_example = {
   ]
 };
 
-makeDownloadableOutput(learner_data_example);
+$(function () {
+  makeDownloadableOutput(learner_data_example);
+});
 
 
 // Creates a downloadable HTML file and starts the download.
 function makeDownloadableOutput(student_data: student_data_structure) {
+  $('body').append("<p>test</p>");
   let page = makePage(student_data);
+  $('body').append(page);
+  /*
   let blob = new Blob([page], { type: 'text/html' });
   let url = URL.createObjectURL(blob);
   let link = document.createElement('a');
   link.href = url;
   link.download = 'output.html';
   link.click();
+  */
 }
 
 // Creates the HTML page.
