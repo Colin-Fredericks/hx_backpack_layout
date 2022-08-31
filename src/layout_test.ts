@@ -9,12 +9,10 @@
 // Everything else is optional.
 type grid_content = {
   title: string,
-  cell_type: "text" | "image" | "list" | "table" | "graph" | "blank",
+  cell_type: "markdown" | "image" | "table" | "graph" | "blank",
   value?: string,
   url?: string,
   alt?: string,
-  items?: string[],
-  list_type?: "bullets" | "numbers",
   table?: string[][],
 };
 
@@ -26,12 +24,12 @@ type student_data_structure = {
 
 let learner_data_example = {
   title: 'Hello World',
-  layout: 'list_1 image_1 / list_1 table_1 / text_1 text_1',
+  layout: 'markdown_1 image_1 / markdown_1 table_1 / markdown2 markdown2',
   content: [
-    { title: 'text_1', cell_type: "text" as const, value: 'Hello World' },
     { title: 'image_1', cell_type: "image" as const, url: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png', alt: 'Google Logo' },
     { title: 'table_1', cell_type: "table" as const, table: [['Header 1', 'Header 2', 'Header 3'], ['1', '2', '3'], ['4', '5', '6']] },
-    { title: 'list_1', cell_type: "list" as const, list_type: "bullets" as const, items: ['item 1', 'item 2', 'item 3'] },
+    { title: 'markdown_1', cell_type: "markdown" as const, value: '* item 1\n* item 2\n*item 3' },
+    { title: 'markdown_2', cell_type: "markdown" as const, value: 'Hello World' },
   ]
 };
 
@@ -95,12 +93,10 @@ function makeGrid(student_data: student_data_structure) {
 function makeGridComponents(content: grid_content[]) {
   for (let i = 0; i < content.length; i++) {
     switch (content[i].cell_type) {
-      case 'text':
+      case 'markdown':
         return makeText(content[i]);
       case 'image':
         return makeImage(content[i]);
-      case 'list':
-        return makeList(content[i]);
       case 'table':
         return makeTable(content[i]);
       case 'graph':
@@ -117,9 +113,10 @@ function makeGridComponents(content: grid_content[]) {
 // options: 
 //   https://github.com/showdownjs/showdown/blob/master/dist/showdown.min.js (100kB)
 //   https://github.com/markedjs/marked/blob/master/marked.min.js (50kB)
-// Also HTML sanitizer: https://github.com/cure53/DOMPurify/blob/main/dist/purify.min.js (20kB)
+// HTML sanitizer: https://github.com/cure53/DOMPurify/ (20kB)
 function makeText(content: grid_content) {
-  return sanitizeHTML(parseMarkdown(content));
+  let markdown = content.value;
+  return DOMPurify.sanitize(marked.parse(markdown));
 }
 
 // Content should be a URL or data URI.
@@ -128,9 +125,6 @@ function makeImage(content: grid_content) {
 }
 
 function makeTable(content: grid_content) {
-}
-
-function makeList(content: grid_content) {
 }
 
 function makeGraph(content: grid_content) {
