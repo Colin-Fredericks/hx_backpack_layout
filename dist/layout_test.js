@@ -58,7 +58,7 @@ function makeGrid(student_data) {
     console.debug(cell_set);
     let grid = "<div class='grid-layout'>";
     cell_set.forEach((cell) => {
-        grid += "<div class='grid-item' grid-area: " + cell + '>';
+        grid += "<div class='grid-item' grid-area=" + cell + '>';
         grid += makeGridComponents(getContent(student_data.content, cell));
         grid += '</div>';
     });
