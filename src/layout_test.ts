@@ -63,7 +63,7 @@ function makePage(student_data: student_data_structure) {
     <title>` +
     student_data.title +
     `</title>` +
-    makeStyles() +
+    makeStyles(student_data) +
     makeScripts() +
     `</head>
 <body>
@@ -74,9 +74,23 @@ function makePage(student_data: student_data_structure) {
   return page;
 }
 
-function makeScripts() { }
+function makeStyles(student_data: student_data_structure) {
+  return `<style>
+    .grid-layout {
+        display: grid;
+        grid: auto auto auto / auto auto;
+        grid-template-areas: ` + makeGridTemplateAreas(student_data.layout) + `;
+    }
+  </style>`;
+}
 
-function makeStyles() { }
+function makeGridTemplateAreas(layout: string): string {
+  let grid_cells = layout.split(' ').filter((x) => x != '/');
+  let grid_template_areas = "'" + grid_cells[0] + " " + grid_cells[1] + "' " + "'" + grid_cells[2] + " " + grid_cells[3] + "' " + "'" + grid_cells[4] + " " + grid_cells[5] + "'";
+  return grid_template_areas;
+}
+
+function makeScripts() { }
 
 // Makes the grid template for the output.
 // Layout format: "text_1 image_1 / text_1 table_1 / text_2 text_2"
@@ -87,7 +101,7 @@ function makeGrid(student_data: student_data_structure) {
   console.debug(cell_set);
   let grid = "<div class='grid-layout'>";
   cell_set.forEach((cell) => {
-    grid += "<div class='grid-item' grid-area=" + cell + '>';
+    grid += "<div class='grid-item' style='grid-area: " + cell + ";'>";
     grid += makeGridComponents(getContent(student_data.content, cell));
     grid += '</div>';
   });
