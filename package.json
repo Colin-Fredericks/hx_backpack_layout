@@ -1,0 +1,24 @@
+{
+  "name": "hx_backpack_layout",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Colin-Fredericks/hx_backpack_layout.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Colin-Fredericks/hx_backpack_layout/issues"
+  },
+  "homepage": "https://github.com/Colin-Fredericks/hx_backpack_layout#readme",
+  "dependencies": {
+    "dompurify": "^2.4.0",
+    "jsdom": "^20.0.0"
+  }
+}
