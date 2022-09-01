@@ -37,8 +37,8 @@ If You initiate litigation by asserting a patent infringement claim against Part
 Description of Modifications. Code" means the Contributions distributed in conjunction with the terms. As an author, you agree to be of the Licensed Product. Create Derivative Works in Source or Object form, provided the result without restriction, including without limitation, method, process, and apparatus claims, in any documentation for the International Sale of Goods is expressly excluded. Any law or regulation then You must retain, in the event Licensee prepares a derivative of it, either verbatim or with modifications and/or translated into another language. Section 2.2. The Source Code of a Larger Work, in any such Licensed Product and any translation into other free programs whose distribution conditions are met: 1.
 `;
 
-let long_list = Array(20).fill(0).map((x, i) => "* item " + i + "\n");
-let long_list_string = long_list.join('\n');
+let long_list: string[] = Array(20).fill(0).map((x, i) => "* item " + i + "\n");
+let long_list_string: string = long_list.join('\n');
 
 let learner_data_example = {
   title: 'Hello World',
@@ -118,21 +118,32 @@ function makeGridTemplateAreas(layout: string): string {
 }
 
 // Builds the scripts to be embedded in the page.
-function makeScripts() { }
+function makeScripts(): string {
+  let script_text = $('#chart_script')[0].innerHTML;
+
+  return `<script id="inner_script">
+      console.log('testing');\n` +
+    script_text +
+    `
+    </script>`;
+
+}
+
 
 // Makes the grid template for the output.
 // Layout format: "text_1 image_1 / text_1 table_1 / text_2 text_2"
 function makeGrid(student_data: student_data_structure) {
   let grid_cells = student_data.layout.split(' ').filter((x) => x != '/');
   let cell_set = new Set(grid_cells);
-  console.debug(cell_set);
   let grid = "<div class='grid-layout'>";
+
   cell_set.forEach((cell) => {
     grid += "<div class='grid-item' style='grid-area: " + cell + ";'>";
     grid += makeGridComponents(getContent(student_data.content, cell));
     grid += '</div>';
   });
   grid += '</div>';
+
   return grid;
 }
 

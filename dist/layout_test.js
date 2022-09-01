@@ -81,13 +81,19 @@ function makeGridTemplateAreas(layout) {
     return grid_template_areas;
 }
 // Builds the scripts to be embedded in the page.
-function makeScripts() { }
+function makeScripts() {
+    let script_text = $('#chart_script')[0].innerHTML;
+    return `<script id="inner_script">
+      console.log('testing');\n` +
+        script_text +
+        `
+    </script>`;
+}
 // Makes the grid template for the output.
 // Layout format: "text_1 image_1 / text_1 table_1 / text_2 text_2"
 function makeGrid(student_data) {
     let grid_cells = student_data.layout.split(' ').filter((x) => x != '/');
     let cell_set = new Set(grid_cells);
-    console.debug(cell_set);
     let grid = "<div class='grid-layout'>";
     cell_set.forEach((cell) => {
         grid += "<div class='grid-item' style='grid-area: " + cell + ";'>";
