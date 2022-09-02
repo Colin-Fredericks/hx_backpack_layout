@@ -13,7 +13,7 @@
 // Everything else is optional.
 type grid_content = {
   title: string,
-  cell_type: "markdown" | "image" | "table" | "graph" | "blank",
+  cell_type: "markdown" | "image" | "table" | "graph" | "form" | "blank",
   value?: string,
   url?: string,
   alt?: string,
