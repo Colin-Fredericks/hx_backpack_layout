@@ -137,11 +137,10 @@ function makeGridTemplateAreas(layout: string): string {
 function makeScripts(student_data: student_data_structure): string {
   let script_text = $('#chart_script')[0].innerHTML;
 
-  // Convert our data into the format that Frappe Charts expects.
-  let chart_data = makeChartData(student_data.content);
-  // stringify the json data so we can insert it into the script.
-  let chart_data_string = JSON.stringify(chart_data);
-
+  // JSON-parse the graph info and fill out blank items in our chart config.
+  // Send it back to the script as an array of strings.
+  let chart_config = loadConfig(student_data);
+  
   // When the page loads, call Frappe to make all the charts.
   script_text += `
   $(function () {
@@ -150,9 +149,7 @@ function makeScripts(student_data: student_data_structure): string {
     // For each graph, make a chart.
     graphs.each(function (index, element) {
       let graph = $(element);
-      const chart = new frappe.Chart(graph.id, {
-        data: { ` + chart_data_string + ` },
-      });
+      const chart = new frappe.Chart('#' + graph.id, ` + chart_config + `[index] );
     });
   });`;
 
@@ -165,7 +162,8 @@ function makeScripts(student_data: student_data_structure): string {
 }
 
 // Turns the string in the content into the format that Frappe Charts expects.
-function makeChartData(content: grid_content[]): chart_config[] {
+function loadConfig(content: student_data_structure): string[] {
+  return ['Not implemented yet'];
 }
 
 // Makes the grid template for the output.
