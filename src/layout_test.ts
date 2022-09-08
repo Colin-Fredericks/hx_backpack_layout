@@ -26,6 +26,22 @@ type student_data_structure = {
   content: grid_content[],
 };
 
+type dataset = {
+  values: number[],
+}
+
+type graph_data = {
+  labels: string[],
+  datasets: dataset[],
+}
+
+type chart_config = {
+  data: graph_data,
+  type: "line" | "bar" | "axis-mixed" | "pie" | "percentage" | "heatmap",
+  height: number,
+  colors: string[],
+}
+
 /*************************
  Sample variables
 *************************/
@@ -85,13 +101,13 @@ function makePage(student_data: student_data_structure) {
     student_data.title +
     `</title>` +
     makeStyles(student_data) +
-    makeScripts() +
     `</head>
-<body>
-    <h1>` + student_data.title + `</h1>` +
+    <body>
+      <h1>` + student_data.title + `</h1>` +
     makeGrid(student_data) +
-    `</body>
-</html>`;
+    makeScripts(student_data) +
+    `</body>` +
+    `</html>`;
   return page;
 }
 
@@ -118,8 +134,27 @@ function makeGridTemplateAreas(layout: string): string {
 }
 
 // Builds the scripts to be embedded in the page.
-function makeScripts(): string {
+function makeScripts(student_data: student_data_structure): string {
   let script_text = $('#chart_script')[0].innerHTML;
+
+  // Convert our data into the format that Frappe Charts expects.
+  let chart_data = makeChartData(student_data.content);
+  // stringify the json data so we can insert it into the script.
+  let chart_data_string = JSON.stringify(chart_data);
+
+  // When the page loads, call Frappe to make all the charts.
+  script_text += `
+  $(function () {
+    // Find all the divs with the graph class.
+    let graphs = $('.graph');
+    // For each graph, make a chart.
+    graphs.each(function (index, element) {
+      let graph = $(element);
+      const chart = new frappe.Chart(graph.id, {
+        data: { ` + chart_data_string + ` },
+      });
+    });
+  });`;
 
   return `<script id="inner_script">
       console.log('testing');\n` +
@@ -129,6 +164,9 @@ function makeScripts(): string {
 
 }
 
+// Turns the string in the content into the format that Frappe Charts expects.
+function makeChartData(content: grid_content[]): chart_config[] {
+}
 
 // Makes the grid template for the output.
 // Layout format: "text_1 image_1 / text_1 table_1 / text_2 text_2"
@@ -139,7 +177,7 @@ function makeGrid(student_data: student_data_structure) {
 
   cell_set.forEach((cell) => {
     grid += "<div class='grid-item' style='grid-area: " + cell + ";'>";
-    grid += makeGridComponents(getContent(student_data.content, cell));
+    grid += makeGridComponents(getContent(student_data.content, cell), cell);
     grid += '</div>';
   });
   grid += '</div>';
@@ -149,7 +187,7 @@ function makeGrid(student_data: student_data_structure) {
 
 // Returns the HTML for the grid components.
 // Mostly shuffles things to other functions.
-function makeGridComponents(content: grid_content) {
+function makeGridComponents(content: grid_content, cell: string): string {
   switch (content.cell_type) {
     case 'markdown':
       return makeText(content);
@@ -158,7 +196,7 @@ function makeGridComponents(content: grid_content) {
     case 'table':
       return makeTable(content);
     case 'graph':
-      return makeGraph(content);
+      return makeGraph(content, cell);
     case 'blank':
       return "";
     default:
@@ -200,7 +238,12 @@ function makeTable(content: grid_content): string {
 }
 
 // Creates a graph from a JSON object.
-function makeGraph(content: grid_content): string {
+// We're using the frappe graph library.
+function makeGraph(content: grid_content, cell: string): string {
+  let graph_id = "graph_" + cell;
+  let graph = "<div id='" + graph_id + " class='graph' > </div>";
+
+
   return "Graphs not yet implemented.";
 }
 
