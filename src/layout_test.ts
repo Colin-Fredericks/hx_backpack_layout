@@ -235,14 +235,12 @@ function makeTable(content: grid_content): string {
   }
 }
 
-// Creates a graph from a JSON object.
-// We're using the frappe graph library.
+// We're using the frappe graph library, which will get called elsewhere.
+// This just makes the div.
 function makeGraph(content: grid_content, cell: string): string {
   let graph_id = "graph_" + cell;
   let graph = "<div id='" + graph_id + " class='graph' > </div>";
-
-
-  return "Graphs not yet implemented.";
+  return graph;
 }
 
 
